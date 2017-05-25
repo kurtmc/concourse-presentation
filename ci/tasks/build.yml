@@ -21,5 +21,4 @@ run:
       cd repo
       go build
       cd ..
-      mv repo/repo bin/my-executable
-      ls -lahR
+      mv repo/repo bin/my-executable-1.0.0.bin

@@ -1,11 +1,22 @@
 ---
 
 resources:
+
   - name: repo
     type: git
     source:
       uri: https://github.com/kurtmc/concourse-presentation.git
       branch: master
+
+  - name: my-executable
+    type: s3
+    source:
+      bucket: eroad-pipeline
+      access_key_id: {{aws-access-key}}
+      secret_access_key: {{aws-secret-key}}
+      region_name: ap-southeast-2
+      private: true
+      regexp: concourse-presentation/my-executable-(\d+.\d+.\d+).bin
 
 jobs:
 
@@ -16,3 +27,6 @@ jobs:
         trigger: true
       - task: build
         file: repo/ci/tasks/build.yml
+      - put: binary
+        params:
+          file: bin/my-executable-*
