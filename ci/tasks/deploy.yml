@@ -15,4 +15,4 @@ run:
   args: 
     - -c
     - |
-      ls my-executable
+      ./my-executable/my-executable-1.0.0.bin
