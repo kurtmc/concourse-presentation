@@ -15,4 +15,5 @@ run:
   args: 
     - -c
     - |
+      chmod +x ./my-executable-test/my-executable-1.0.0.test
       ./my-executable-test/my-executable-1.0.0.test
