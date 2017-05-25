@@ -18,6 +18,16 @@ resources:
       private: true
       regexp: concourse-presentation/my-executable-(\d+.\d+.\d+).bin
 
+  - name: my-executable-test
+    type: s3
+    source:
+      bucket: eroad-pipeline
+      access_key_id: {{aws-access-key}}
+      secret_access_key: {{aws-secret-key}}
+      region_name: ap-southeast-2
+      private: true
+      regexp: concourse-presentation/my-executable-(\d+.\d+.\d+).test
+
 jobs:
 
   - name: build
@@ -27,9 +37,26 @@ jobs:
         trigger: true
       - task: build
         file: repo/ci/tasks/build.yml
-      - put: my-executable
-        params:
-          file: bin/my-executable-*
+      - aggregate:
+        - put: my-executable
+          params:
+            file: bin/my-executable-*.bin
+        - put: my-executable-test
+          params:
+            file: bin/my-executable-*.test
+
+  - name: test
+    serial: true
+    plan:
+      - aggregate:
+        - get: repo
+        - get: my-executable-test
+          passed: [build]
+          trigger: true
+        - get: my-executable
+          passed: [build]
+      - task: test
+        file: repo/ci/tasks/test.yml
 
   - name: deploy
     serial: true
@@ -37,7 +64,7 @@ jobs:
       - aggregate:
         - get: repo
         - get: my-executable
-          passed: [build]
+          passed: [test]
           trigger: true
       - task: deploy
         file: repo/ci/tasks/deploy.yml

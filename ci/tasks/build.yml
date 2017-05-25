@@ -20,5 +20,7 @@ run:
     - |
       cd repo
       go build
+      go test -c
       cd ..
       mv repo/repo bin/my-executable-1.0.0.bin
+      mv repo/repo.test bin/my-executable-1.0.0.test
