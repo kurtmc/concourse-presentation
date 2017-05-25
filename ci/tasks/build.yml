@@ -22,3 +22,4 @@ run:
       go build
       cd ..
       mv repo/repo bin/my-executable
+      ls -lahR
