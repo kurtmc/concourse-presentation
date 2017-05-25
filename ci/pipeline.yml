@@ -27,6 +27,17 @@ jobs:
         trigger: true
       - task: build
         file: repo/ci/tasks/build.yml
-      - put: binary
+      - put: my-executable
         params:
           file: bin/my-executable-*
+
+  - name: deploy
+    serial: true
+    plan:
+      - aggregate:
+        - get: repo
+        - get: my-executable
+          passed: [build]
+          trigger: true
+      - task: deploy
+        file: repo/ci/tasks/deploy.yml
